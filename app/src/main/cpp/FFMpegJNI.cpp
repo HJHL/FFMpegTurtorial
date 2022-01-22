@@ -5,6 +5,8 @@
 //
 #include <string>
 
+// 尤其注意这里，ffmpeg 是 c 库，在 include 它的头文件时，也必须以 c 的方式引入，
+// 否则链接时会出现异常，提示找不到符号。
 extern "C" {
 #include "libavcodec/version.h"
 #include "libavcodec/avcodec.h"

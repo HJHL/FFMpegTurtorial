@@ -5,9 +5,13 @@ project("ffmpegturtorial")
 
 set(CMAKE_CXX_STANDARD 17)
 
+# 创建变量，声明了 ffmpeg 动态库的位置，将会根据 abi 有不同的区分
 set(ffmpeg_lib_dir ${CMAKE_SOURCE_DIR}/../libs/${ANDROID_ABI})
+# 创建变量，声明了 ffmpeg 头文件的位置
 set(ffmpeg_include_dir ${CMAKE_SOURCE_DIR}/ffmpeg)
 
+# 添加预构建的 ffmpeg 动态库到项目中
+# ref：https://developer.android.com/studio/projects/configure-cmake#add-other-library
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec
         PROPERTIES IMPORTED_LOCATION
@@ -47,25 +51,17 @@ add_library(ffmpeg
         SHARED
         FFMpegJNI.cpp)
 
-find_library( # Sets the name of the path variable.
-        log-lib
-
-        # Specifies the name of the NDK library that
-        # you want CMake to locate.
+find_library(log-lib
         log)
-
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
 
 target_include_directories(ffmpeg
         PRIVATE
         ${ffmpeg_include_dir}
         )
 
-target_link_libraries( # Specifies the target library.
+target_link_libraries(
         ffmpeg
-
+        # 链接到 ffmpeg 动态库
         avcodec
         avdevice
         avfilter
@@ -74,6 +70,4 @@ target_link_libraries( # Specifies the target library.
         swscale
         avutil
 
-        # Links the target library to the log library
-        # included in the NDK.
         ${log-lib})
